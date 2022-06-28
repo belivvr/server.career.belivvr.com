@@ -1,4 +1,9 @@
 import { Module } from '@nestjs/common';
+import { MessageGateway } from './message.gateway';
 
-@Module({})
+@Module({
+  imports: [],
+  controllers: [],
+  providers: [MessageGateway],
+})
 export class MessageModule {}
