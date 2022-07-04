@@ -11,6 +11,9 @@ type SocketMap = Map<string, { name: string; kick: () => Socket }>;
 
 type NamePayload = { name: string };
 type ChatPayload = string;
+type Position = { x: number; y: number; z: number };
+type Rotation = { x: number; y: number; z: number };
+type OccupantsPayload = { id: string; position: Position; rotation: Rotation };
 
 @WebSocketGateway()
 export class ChatGateway {
@@ -39,5 +42,13 @@ export class ChatGateway {
       name: sender.name,
       message: chat,
     });
+  }
+
+  @SubscribeMessage('occupants')
+  handleOccupants(
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() data: OccupantsPayload,
+  ): void {
+    socket.broadcast.emit('occupants', data);
   }
 }
