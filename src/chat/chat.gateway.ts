@@ -15,12 +15,24 @@ type Position = { x: number; y: number; z: number };
 type Rotation = { x: number; y: number; z: number };
 type OccupantsPayload = { id: string; position: Position; rotation: Rotation };
 
+const occupants = {};
+
 @WebSocketGateway()
 export class ChatGateway {
   @WebSocketServer()
   server: Server;
 
   private sockets: SocketMap = new Map();
+
+  handleConnection(@ConnectedSocket() socket: Socket) {
+    socket.emit('all occupants', occupants);
+
+    socket.on('disconnect', () => {
+      this.server.emit('leave', socket.id);
+
+      delete occupants[socket.id];
+    });
+  }
 
   @SubscribeMessage('name')
   handleName(
@@ -49,6 +61,7 @@ export class ChatGateway {
     @ConnectedSocket() socket: Socket,
     @MessageBody() data: OccupantsPayload,
   ): void {
-    socket.broadcast.emit('occupants', data);
+    occupants[socket.id] = { position: data.position };
+    socket.broadcast.emit('occupants', { ...data, id: socket.id });
   }
 }
