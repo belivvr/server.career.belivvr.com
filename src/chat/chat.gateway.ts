@@ -61,7 +61,7 @@ export class ChatGateway {
     @ConnectedSocket() socket: Socket,
     @MessageBody() data: OccupantsPayload,
   ): void {
-    occupants[socket.id] = { position: data.position };
+    occupants[socket.id] = { position: data.position, rotation: data.rotation };
     socket.broadcast.emit('occupants', { ...data, id: socket.id });
   }
 }
