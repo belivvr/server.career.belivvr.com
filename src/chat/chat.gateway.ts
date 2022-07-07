@@ -13,7 +13,12 @@ type NamePayload = { name: string };
 type ChatPayload = string;
 type Position = { x: number; y: number; z: number };
 type Rotation = { x: number; y: number; z: number };
-type OccupantsPayload = { id: string; position: Position; rotation: Rotation };
+type OccupantsPayload = {
+  id: string;
+  name: string;
+  position: Position;
+  rotation: Rotation;
+};
 
 const occupants = {};
 
@@ -61,7 +66,11 @@ export class ChatGateway {
     @ConnectedSocket() socket: Socket,
     @MessageBody() data: OccupantsPayload,
   ): void {
-    occupants[socket.id] = { position: data.position, rotation: data.rotation };
+    occupants[socket.id] = {
+      name: data.name,
+      position: data.position,
+      rotation: data.rotation,
+    };
     socket.broadcast.emit('occupants', { ...data, id: socket.id });
   }
 }
