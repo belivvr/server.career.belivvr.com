@@ -22,7 +22,7 @@ type OccupantsPayload = {
 
 const occupants = {};
 
-@WebSocketGateway({ cors: true })
+@WebSocketGateway()
 export class ChatGateway {
   @WebSocketServer()
   server: Server;
