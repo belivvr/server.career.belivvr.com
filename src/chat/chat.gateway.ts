@@ -64,7 +64,10 @@ export class ChatGateway {
     @ConnectedSocket() socket: Socket,
     @MessageBody() { name }: NamePayload,
   ): void {
-    this.sockets.set(socket.id, { name, kick: () => socket.disconnect() });
+    this.sockets.set(socket.id, {
+      name: name.substring(0, 20),
+      kick: () => socket.disconnect(),
+    });
   }
 
   @SubscribeMessage('chat')
@@ -75,7 +78,7 @@ export class ChatGateway {
     this.logger.info({
       behavior: 'chat',
       id: socket.id,
-      name,
+      name: name.substring(0, 20),
       message,
     });
 
@@ -91,7 +94,7 @@ export class ChatGateway {
     @MessageBody() data: OccupantsPayload,
   ): void {
     occupants[socket.id] = {
-      name: data.name,
+      name: data.name.substring(0, 20),
       position: data.position,
       rotation: data.rotation,
     };
